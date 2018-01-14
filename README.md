@@ -22,9 +22,9 @@
 
 ### 模拟开房对战
 1. 填写index.js文件中2个对战用户的 uid & token
-2. npm start 执行脚本
+2. npm run start 执行脚本
 
 ### 模拟排位
 1. 填写modify-response.js中的token
 2. 手机信任证书并连上代理
-3. npm fight 执行脚本
+3. npm run fight 执行脚本
