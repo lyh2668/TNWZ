@@ -19,6 +19,9 @@
 // 苹果端的可以在手机的Safiri里面输入xxx.xxx.xxx.xxx:8002/fetchCrtFile的方式下载到证书
 // 高版本的iOS可能需要在两处地方信任。
 ```
+1. git clone
+2. npm install 或 yarn install
+3. 开启mongodb数据库
 
 ### 模拟开房对战
 1. 填写index.js文件中2个对战用户的 uid & token
