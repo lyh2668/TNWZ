@@ -6,7 +6,7 @@
   "scripts": {
     "test": "echo \"Error: no test specified\" && exit 1",
     "start": "node start.js",
-    "fight": "node start-fight.js"
+    "fight": "anyproxy -i -s --rule modify-response.js"
   },
   "author": "lyh2668",
   "license": "MIT",
