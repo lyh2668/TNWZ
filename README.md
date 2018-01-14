@@ -6,10 +6,24 @@
 2. mongodb
 3. anyproxy
 
+#### 安装anyproxy
+```
+1. 安装node.js
+2. npm i -g anyproxy
+3. anyproxy-ca // 生成证书
+4. anyproxy -i // 以代理https的方式启动
+// 然后手机端配置代理的IP及PORT，默认端口为8001，
+// Anyproxy的WebService的默认端口为8002，这里可以查看到接口
+// 手机端配置代理以后需要下载证书并信任，
+// 苹果端的可以在手机的Safiri里面输入xxx.xxx.xxx.xxx:8002/fetchCrtFile的方式下载到证书
+// 高版本的iOS可能需要在两处地方信任。
+```
+
 ### 模拟开房对战
 1. 填写index.js文件中2个对战用户的 uid & token
 2. npm start 执行脚本
 
 ### 模拟排位
 1. 填写modify-response.js中的token
-2. npm fight 执行脚本
+2. 手机信任证书并连上代理
+3. npm fight 执行脚本
