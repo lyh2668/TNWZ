@@ -1,6 +1,6 @@
 # TNWZ
 头脑王者开房答题抓题库 & 排位自动答题脚本
-### [掘金文章: 我是如何次次《头脑王者》获得满分的](https://juejin.im/editor/posts/5a5b4097518825734d149423)
+### [掘金文章: 我是如何次次《头脑王者》获得满分的](https://juejin.im/post/5a5b4097518825734d149423)
 
 ### 环境要求
 1. node v7.6以上
@@ -19,15 +19,16 @@
 // 苹果端的可以在手机的Safiri里面输入xxx.xxx.xxx.xxx:8002/fetchCrtFile的方式下载到证书
 // 高版本的iOS可能需要在两处地方信任。
 ```
+#### 先做以下操作
 1. git clone
 2. npm install 或 yarn install
 3. 开启mongodb数据库
 
-### 模拟开房对战
+### 模拟开房对战（需要先通过这个获取题库）
 1. 填写index.js文件中2个对战用户的 uid & token
 2. npm run start 执行脚本
 
-### 模拟排位
+### 模拟排位（等题库规模达到1.5W以后，就会正确率极高）
 1. 填写modify-response.js中的token
 2. 手机信任证书并连上代理
 3. npm run fight 执行脚本
