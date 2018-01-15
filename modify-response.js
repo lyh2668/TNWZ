@@ -109,7 +109,8 @@ const findQuiz = async (requestData) => {
 
 module.exports = {
   *beforeSendRequest(requestDetail) {
-    if (requestDetail.url === 'https://question.hortor.net/question/fight/match') {
+    if (requestDetail.url === 'https://question.hortor.net/question/fight/match' ||
+        requestDetail.url === 'https://question.hortor.net/question/fight/beginFight') {
       startFlag = 0
       console.log('--------match fight--------')
       return requestDetail
