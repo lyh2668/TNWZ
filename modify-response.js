@@ -71,7 +71,7 @@ const findQuiz = async (requestData) => {
     console.log('start findQuiz.')
     // 继续请求
     let res = await rp.post(
-      'https://question.hortor.net/question/bat/findQuiz',
+      'https://question.hortor.net/question/fight/findQuiz',
       { form: splitParams(requestData) })
     console.log('findQuiz: ', res)
     if (res) {
@@ -109,15 +109,15 @@ const findQuiz = async (requestData) => {
 
 module.exports = {
   *beforeSendRequest(requestDetail) {
-    if (requestDetail.url === 'https://question.hortor.net/question/bat/match' ||
-        requestDetail.url === 'https://question.hortor.net/question/bat/beginFight') {
+    if (requestDetail.url === 'https://question.hortor.net/question/fight/match' ||
+        requestDetail.url === 'https://question.hortor.net/question/fight/beginFight') {
       startFlag = 0
       console.log('--------match fight--------')
       return requestDetail
     }
   },
   *beforeSendResponse(requestDetail, responseDetail) {
-    if (requestDetail.url === 'https://question.hortor.net/question/bat/findQuiz') {
+    if (requestDetail.url === 'https://question.hortor.net/question/fight/findQuiz') {
       findQuiz(requestDetail.requestData).then((res) => {
         return res
       })
