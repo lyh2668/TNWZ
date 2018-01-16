@@ -7,13 +7,13 @@ from Check.StartCheck import StartCheck
 def judge(path, s):
     im = Image.open(path)
     x, y = im.size
-    checkStartGameY = 22 * y / 24
+    checkStartGameY = 22 * y / 24  # 开始游戏坐标
     checkStartGameX = x / 2
-    checkFinishGameY = 17 * y / 24
+    checkFinishGameY = 17 * y / 24  #结束游戏坐标
     checkFinishGameX = x / 2
-    checkLvUpY = 18 * y / 24
+    checkLvUpY = 18 * y / 24        #升级坐标
     checkLvUpX = x / 2
-    checkAnswerY = 13 * y / 24
+    checkAnswerY = 13 * y / 24      #答题坐标
     checkAnswerX = x / 2
     im_pixel = im.load()
     # JudgeStart(im_pixel, x, y)
@@ -98,9 +98,3 @@ def JudgeLvUp(im_pixel, x, y):
             break
     if i >= judgeYTo - 49:
         return True
-
-
-if __name__ == '__main__':
-    im = Image.open("./11.png")
-    im_pixel = im.load()
-    judge("./11.png", 1)
