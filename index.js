@@ -50,24 +50,20 @@ const createSignature = (params, token) => {
 let roomID = -1
 
 const intoRoom = async (player) => {
-  try {
-    let params = {
-      roomID,
-      uid: userForgeInfo[player].uid,
-      t: new Date().getTime()
-    }
-    let sign = createSignature(params, userForgeInfo[player].token)
-    params.sign = sign
-    //console.log(params)
-    const res = await rp.post(
-      'https://question.hortor.net/question/bat/intoRoom',
-      { form: params })
-    console.log('intoRoom: '+player)
+	let params = {
+	roomID,
+	uid: userForgeInfo[player].uid,
+	t: new Date().getTime()
+	}
+	let sign = createSignature(params, userForgeInfo[player].token)
+	params.sign = sign
+	//console.log(params)
+	const res = await rp.post(
+	'https://question.hortor.net/question/bat/intoRoom',
+	{ form: params })
+	console.log('intoRoom: '+player)
 	//console.log(res)
-    roomID = JSON.parse(res).data.roomId
-  } catch (err) {
-    console.error(err.message)
-  }
+	roomID = JSON.parse(res).data.roomId
 }
 
 const leaveRoom = async (player) => {
@@ -220,22 +216,23 @@ const start = async () => {
   //异常流程保证完成退出操作，保护token不失效
   let failed = false
   //加入一个控制设置
-  while (fs.readFileSync('./control') == '1' || !failed) {
+  fs.writeFileSync('./control.ini', '1')
+  while (fs.readFileSync('./control') == '1' || failed) {
     // 1. 有可能上一次流程异常，则会无法进行下一次的阶段
     // 2. 有可能initRoom超时，则需要重新initRoom
     // play1创建房间
 	if(!failed){
-		roomID = -1
-		await intoRoom('player1')
-		sleep(100)
-		// play2加入房间
-		await intoRoom('player2')
-		sleep(100)
-		// 开始答题
-		await beginFight()
-		sleep(100)
-		// 获取题目, 进行答题
-		await startAnswer()
+		try{
+			roomID = -1
+			await intoRoom('player1')
+			sleep(100)
+			// play2加入房间
+			await intoRoom('player2')
+			sleep(100)
+		}catch (err){
+			console.error(err.message)
+			continue
+		}
 	}
 	try{
 		await getResults('player1')
