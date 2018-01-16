@@ -9,7 +9,7 @@ import QuizModel from './models/quiz'
 const options = {
   method: 'POST',
   hostname: 'question.hortor.net',
-  path: '/question/fight/intoRoom',
+  path: '/question/bat/intoRoom',
   headers: {
     'Content-Type': 'application/x-www-form-urlencoded'
   }
@@ -23,12 +23,12 @@ const options = {
  */
 const userForgeInfo = {
   player1: {
-    uid: '这里填入用户1的uid',
-    token: '这里填入用户1的token'
+    uid: '填写UID',
+    token: '填写TOKEN'
   },
   player2: {
-    uid: '这里填入用户2的uid',
-    token: '这里填入用户2的token'
+    uid: '填写UID',
+    token: '填写TOKEN'
   }
 }
 
@@ -58,11 +58,12 @@ const intoRoom = async (player) => {
     }
     let sign = createSignature(params, userForgeInfo[player].token)
     params.sign = sign
-    console.log(params)
+    //console.log(params)
     const res = await rp.post(
-      'https://question.hortor.net/question/fight/intoRoom',
+      'https://question.hortor.net/question/bat/intoRoom',
       { form: params })
-    console.log('intoRoom', res)
+    console.log('intoRoom: '+player)
+	//console.log(res)
     roomID = JSON.parse(res).data.roomId
   } catch (err) {
     console.error(err.message)
@@ -70,23 +71,20 @@ const intoRoom = async (player) => {
 }
 
 const leaveRoom = async (player) => {
-  try {
-    let params = {
-      roomID,
-      uid: userForgeInfo[player].uid,
-      t: new Date().getTime()
-    }
-    let sign = createSignature(params, userForgeInfo[player].token)
-    params.sign = sign
-    console.log(params)
-    const res = await rp.post(
-      'https://question.hortor.net/question/fight/leaveRoom',
-      { form: params })
-    console.log(res)
-    // roomID = JSON.parse(res).data.roomId
-  } catch (err) {
-    console.error(err.message)
-  }
+	let params = {
+	  roomID,
+	  uid: userForgeInfo[player].uid,
+	  t: new Date().getTime()
+	}
+	let sign = createSignature(params, userForgeInfo[player].token)
+	params.sign = sign
+	//console.log(params)
+	const res = await rp.post(
+	  'https://question.hortor.net/question/bat/leaveRoom',
+	  { form: params })
+	console.log('leaveRoom: '+player);
+	console.log(res)
+	// roomID = JSON.parse(res).data.roomId
 }
 
 const beginFight = async () => {
@@ -100,7 +98,7 @@ const beginFight = async () => {
     params.sign = sign
 
     const res = await rp.post(
-      'https://question.hortor.net/question/fight/beginFight',
+      'https://question.hortor.net/question/bat/beginFight',
       { form: params }
     )
     console.log('beginFight: ', res)
@@ -122,10 +120,10 @@ const findQuiz = async (num) => {
     params.sign = sign
 
     const res = await rp.post(
-      'https://question.hortor.net/question/fight/findQuiz',
+      'https://question.hortor.net/question/bat/findQuiz',
       { form: params }
     )
-    console.log('findQuiz: ', res)
+    console.log('findQuiz')
     return JSON.parse(res)
   } catch (err) {
     console.error(err.message)
@@ -145,10 +143,10 @@ const chooseAnswer = async (player, num, answer = 0) => {
     params.sign = sign
 
     const res = await rp.post(
-      'https://question.hortor.net/question/fight/choose',
+      'https://question.hortor.net/question/bat/choose',
       { form: params }
     )
-    console.log('chooseAnswer: ', res)
+    console.log('chooseAnswer: '+player)
     return JSON.parse(res)
   } catch (err) {
     console.error(err.message)
@@ -156,23 +154,19 @@ const chooseAnswer = async (player, num, answer = 0) => {
 }
 
 const getResults = async (player) => {
-  try {
-    let params = {
-      roomID,
-      uid: userForgeInfo[player].uid,
-      t: new Date().getTime()
-    }
-    let sign = createSignature(params, userForgeInfo[player].token)
-    params.sign = sign
+	let params = {
+	  roomID,
+	  uid: userForgeInfo[player].uid,
+	  t: new Date().getTime()
+	}
+	let sign = createSignature(params, userForgeInfo[player].token)
+	params.sign = sign
 
-    const res = await rp.post(
-      'https://question.hortor.net/question/fight/fightResult',
-      { form: params }
-    )
-    console.log('getResults')
-  } catch (err) {
-    console.error(err.message)
-  }
+	const res = await rp.post(
+	  'https://question.hortor.net/question/bat/fightResult',
+	  { form: params }
+	)
+	console.log('getResults: '+player)
 }
 
 const sleep = (numberMillis) => {
@@ -202,8 +196,9 @@ const startAnswer = async () => {
         ++success
       }
       let result = await chooseAnswer('player1', i + 1, answer)
+	  sleep(300)
       // 玩家2是否可以不作答？
-      await chooseAnswer('player2', i + 1)
+      await chooseAnswer('player2', i + 1, answer)
 
       let params = Object.assign(quiz.data, {answer: result.data.answer})
       if (!one) {
@@ -211,7 +206,7 @@ const startAnswer = async () => {
         const saved = await quizModel.save()
         console.log(saved)
       }
-      sleep(200)
+      sleep(300)
     }
     let count = await QuizModel.count()
     console.log(`success: ${success} total: ${count}`)
@@ -222,24 +217,42 @@ const startAnswer = async () => {
 }
 
 const start = async () => {
-  // let i = 100
-  while (1) {
+  //异常流程保证完成退出操作，保护token不失效
+  let failed = false
+  //加入一个控制设置
+  while (fs.readFileSync('./control') == '1' || !failed) {
     // 1. 有可能上一次流程异常，则会无法进行下一次的阶段
     // 2. 有可能initRoom超时，则需要重新initRoom
     // play1创建房间
-    roomID = -1
-    await intoRoom('player1')
-    // play2加入房间
-    await intoRoom('player2')
-    // 开始答题
-    await beginFight()
-    // 获取题目, 进行答题
-    await startAnswer()
-    await getResults('player1')
-    await getResults('player2')
-    await leaveRoom('player1')
-    await leaveRoom('player2')
-    sleep(1000)
+	if(!failed){
+		roomID = -1
+		await intoRoom('player1')
+		sleep(100)
+		// play2加入房间
+		await intoRoom('player2')
+		sleep(100)
+		// 开始答题
+		await beginFight()
+		sleep(100)
+		// 获取题目, 进行答题
+		await startAnswer()
+	}
+	try{
+		await getResults('player1')
+		sleep(100)
+		await getResults('player2')
+		sleep(100)
+		await leaveRoom('player1')
+		sleep(100)
+		await leaveRoom('player2')
+		sleep(100)
+		failed = false
+	}catch (err) {
+		console.error(err.message)
+		failed = true
+	}
+	console.log('loop end.')
+    sleep(500)
   }
 }
 
