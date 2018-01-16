@@ -60,7 +60,7 @@ const intoRoom = async (player) => {
     params.sign = sign
     console.log(params)
     const res = await rp.post(
-      'https://question.hortor.net/question/bat/intoRoom',
+      'https://question.hortor.net/question/fight/intoRoom',
       { form: params })
     console.log('intoRoom', res)
     roomID = JSON.parse(res).data.roomId
@@ -80,7 +80,7 @@ const leaveRoom = async (player) => {
     params.sign = sign
     console.log(params)
     const res = await rp.post(
-      'https://question.hortor.net/question/bat/leaveRoom',
+      'https://question.hortor.net/question/fight/leaveRoom',
       { form: params })
     console.log(res)
     // roomID = JSON.parse(res).data.roomId
@@ -100,7 +100,7 @@ const beginFight = async () => {
     params.sign = sign
 
     const res = await rp.post(
-      'https://question.hortor.net/question/bat/beginFight',
+      'https://question.hortor.net/question/fight/beginFight',
       { form: params }
     )
     console.log('beginFight: ', res)
@@ -122,7 +122,7 @@ const findQuiz = async (num) => {
     params.sign = sign
 
     const res = await rp.post(
-      'https://question.hortor.net/question/bat/findQuiz',
+      'https://question.hortor.net/question/fight/findQuiz',
       { form: params }
     )
     console.log('findQuiz: ', res)
@@ -145,7 +145,7 @@ const chooseAnswer = async (player, num, answer = 0) => {
     params.sign = sign
 
     const res = await rp.post(
-      'https://question.hortor.net/question/bat/choose',
+      'https://question.hortor.net/question/fight/choose',
       { form: params }
     )
     console.log('chooseAnswer: ', res)
@@ -166,7 +166,7 @@ const getResults = async (player) => {
     params.sign = sign
 
     const res = await rp.post(
-      'https://question.hortor.net/question/bat/fightResult',
+      'https://question.hortor.net/question/fight/fightResult',
       { form: params }
     )
     console.log('getResults')
