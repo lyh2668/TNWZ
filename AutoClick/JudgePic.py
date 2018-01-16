@@ -7,14 +7,14 @@ from Check.StartCheck import StartCheck
 def judge(path, s):
     im = Image.open(path)
     x, y = im.size
-    checkStartGameY = 22 * y / 24  # 开始游戏坐标
-    checkStartGameX = x / 2
-    checkFinishGameY = 17 * y / 24  #结束游戏坐标
-    checkFinishGameX = x / 2
-    checkLvUpY = 18 * y / 24        #升级坐标
-    checkLvUpX = x / 2
-    checkAnswerY = 13 * y / 24      #答题坐标
-    checkAnswerX = x / 2
+    clickStartGameY = 22 * y / 24  # 开始游戏坐标
+    clickStartGameX = x / 2
+    clickFinishGameY = 17 * y / 24  #结束游戏坐标
+    clickFinishGameX = x / 2
+    clickLvUpY = 18 * y / 24        #升级坐标
+    clickLvUpX = x / 2
+    clickAnswerY = 13 * y / 24      #答题坐标
+    clickAnswerX = x / 2
     im_pixel = im.load()
     # JudgeStart(im_pixel, x, y)
     # JudgeChooseAnswer(im_pixel, x, y)
@@ -24,25 +24,19 @@ def judge(path, s):
 
     if (JudgeStart(im_pixel, x, y)):
         print("start")
-        StartCheck(checkStartGameX, checkStartGameY)
-        # print(checkStartGameX, checkStartGameY)
-        # StartCheck(500, 1040)
+        StartClick(clickStartGameX, clickStartGameY)
         return
     if (JudgeFinish(im_pixel, x, y)):
         print("finish")
-        StartCheck(checkFinishGameX, checkFinishGameY)
-        # print(checkFinishGameX, checkFinishGameY)
+        StartClick(clickFinishGameX, clickFinishGameY)
         return
     if (JudgeLvUp(im_pixel, x, y)):
         print("lvUp")
-        StartCheck(checkLvUpX, checkLvUpY)
-        # print(checkLvUpX, checkLvUpY)
+        StartClick(clickLvUpX, clickLvUpY)
         return
     if (JudgeChooseAnswer(im_pixel, x, y)):
         print("choose")
-        StartCheck(checkAnswerX, checkAnswerY)
-        # print(checkAnswerX, checkAnswerY)
-        # StartCheck(500, 1040)
+        StartClick(clickAnswerX, clickAnswerY)
         return
 
 
