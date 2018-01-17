@@ -47,5 +47,5 @@
 
 3. 题库需要自行爬取，是为了增加一下难度希望大家慎用该脚本
 
-有事儿可扫该微信
-![](https://s1.ax1x.com/2018/01/17/pD1p36.jpg)
+<img src="https://s1.ax1x.com/2018/01/17/pD1p36.jpg" width="200" height="200" />
+<img src="https://s1.ax1x.com/2018/01/17/pDDhEq.jpg" width="200" height="200" />
