@@ -4,16 +4,12 @@
  - 不存在： 返回findQuiz接口数据让用户手动答题（或者选择随机答案）
  */
 
-// import rp from 'request-promise'
-// import crypto from 'crypto'
-// import './mongodb'
-// import QuizModel from './models/quiz'
 const rp = require('request-promise')
 const crypto = require('crypto')
 require('./mongodb')
 const QuizModel = require('./models/quiz')
 
-const token = '这里填入token'
+const token = 'e65549b105a77ff9127fb508dce3f065'
 
 const createSignature = (params, token) => {
   let obj = Object.assign(params, { token })
@@ -46,7 +42,7 @@ const chooseAnswer = async (data, option) => {
     params.sign = sign
     console.log('params: ', params, 'sign: ', sign)
     const res = await rp.post(
-      'https://question.hortor.net/question/fight/choose',
+      'https://question.hortor.net/question/bat/choose',
       { form: params }
     )
     console.log('chooseAnswer: ', res)
@@ -66,61 +62,50 @@ const splitParams = (data) => {
   return obj
 }
 
-const findQuiz = async (requestData) => {
+const findQuiz = async (requestData, newResponse) => {
   try {
     console.log('start findQuiz.')
-    // 继续请求
-    let res = await rp.post(
-      'https://question.hortor.net/question/bat/findQuiz',
-      { form: splitParams(requestData) })
-    console.log('findQuiz: ', res)
-    if (res) {
-      res = JSON.parse(res)
-    } else  {
-      throw new Error('quiz not exist.')
-    }
-
-    if (!res.data) {
-      throw new Error(JSON.stringify(res))
-    }
-
+    let res = JSON.parse(newResponse.body)
     const options = res.data.options
-    console.log('options: ', options)
     const one = await QuizModel.findOne({ quiz: res.data.quiz })
-    console.log('one: ', one)
-    // 题目未找到则返回题目手工作答
     if (!one) {
-      return null
+      return { response: newResponse }
     }
+
     const option = one.options[one.answer - 1]
     const index = options.indexOf(option) + 1
     console.log('option: ', option, 'index: ', index)
-    const params = splitParams(requestData)
-    const answer = await chooseAnswer(params, index)
-    console.log('answer', answer)
-
-    return res
+    res.data.options[index - 1] = `${option}‼️`
+    // 这两行开启则为秒选，手机上随意点答案即可
+    // const params = splitParams(requestData)
+    // const answer = await chooseAnswer(params, index)
+    newResponse.body = JSON.stringify(res)
+    return { response: newResponse }
   } catch (err) {
     console.error('error: ', err.message)
     return err.message
-    // return responseDetail.response
   }
 }
 
 module.exports = {
   *beforeSendRequest(requestDetail) {
-    if (requestDetail.url === 'https://question.hortor.net/question/bat/match' ||
-        requestDetail.url === 'https://question.hortor.net/question/bat/beginFight') {
+    if (requestDetail.url === 'https://question.hortor.net/question/bat/match') {
       startFlag = 0
-      console.log('--------match fight--------')
+      console.log('--------match bat--------')
       return requestDetail
     }
   },
   *beforeSendResponse(requestDetail, responseDetail) {
     if (requestDetail.url === 'https://question.hortor.net/question/bat/findQuiz') {
-      findQuiz(requestDetail.requestData).then((res) => {
-        return res
-      })
+      let newResponse = Object.assign({}, responseDetail.response)
+      return findQuiz(requestDetail.requestData, newResponse).then()
     }
+  },
+  // 只代理host question.hortor.net
+  *beforeDealHttpsRequest(requestDetail) {
+    if (requestDetail.host && requestDetail.host.includes('question.hortor.net')) {
+      return true
+    }
+    return false
   }
 }
