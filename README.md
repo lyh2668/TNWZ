@@ -5,6 +5,8 @@
 
 ### [掘金文章: 我是如何次次《头脑王者》获得满分的](https://juejin.im/post/5a5b4097518825734d149423)
 
+[![](https://badge.juejin.im/entry/5a5b59126fb9a01cae0f9a4e/likes.svg?style=flat)](https://juejin.im/post/5a5b4097518825734d149423)
+
 ### 环境要求
 1. node v7.6以上
 2. mongodb
